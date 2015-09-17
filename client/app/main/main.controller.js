@@ -141,7 +141,7 @@ angular.module('exploretipApp')
                         
                         // create window for markers
                         $.each(data.HotelListResponse.HotelList.HotelSummary, function(k, v) {
-	                        console.log(v);
+	                        //console.log(v);
 	                        var averageRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@averageRate"];
 	                        var totalRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@total"]; // this value includes the surcharge
                             locations.push([
