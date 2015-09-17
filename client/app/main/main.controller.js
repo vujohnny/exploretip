@@ -96,12 +96,13 @@ angular.module('exploretipApp')
 
             var map = new google.maps.Map(document.getElementById('googleMap'), {
                 center: {
-                    lat: -33.8688,
-                    lng: 151.2195
+                    lat: 38.4740022,
+                    lng: -95.426484
                 },
-                zoom: 15,
+                zoom: 3,
                 scrollwheel: false,
-                draggable: false
+                draggable: false,
+                disableDefaultUI: true
             });
 
 			// init autocomplete on input search
@@ -162,12 +163,17 @@ angular.module('exploretipApp')
                         var infowindow = new google.maps.InfoWindow();
                         var marker, i;
                         var markers = new Array();
+                        
+                        // build hotel template
                         for (i = 0; i < locations.length; i++) {
+                            
                             marker = new google.maps.Marker({
                                 position: new google.maps.LatLng(locations[i][0], locations[i][1]),
                                 map: map,
-                                label: labels[labelIndex++ % labels.length]
+                                label: labels[labelIndex++ % labels.length],
+                                animation: google.maps.Animation.DROP
                             });
+                            
                             markers.push(marker);
                             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                                 return function() {
@@ -175,6 +181,7 @@ angular.module('exploretipApp')
                                     infowindow.open(map, marker);
                                 }
                             })(marker, i));
+                            
                         }
 
                     },
@@ -188,7 +195,6 @@ angular.module('exploretipApp')
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(17);
                 }
             }); 
 
