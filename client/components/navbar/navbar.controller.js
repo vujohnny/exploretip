@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .controller('NavbarCtrl', function ($scope) {
     $scope.menu = [{
       'title': 'Home',

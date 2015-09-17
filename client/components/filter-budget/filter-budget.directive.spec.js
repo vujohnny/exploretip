@@ -3,7 +3,7 @@
 describe('Directive: filterBudget', function () {
 
   // load the directive's module and view
-  beforeEach(module('seekdeerApp'));
+  beforeEach(module('exploretipApp'));
   beforeEach(module('components/filter-budget/filter-budget.html'));
 
   var element, scope;

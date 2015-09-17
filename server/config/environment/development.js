@@ -5,7 +5,7 @@
 module.exports = {
   // MongoDB connection options
   mongo: {
-    uri: 'mongodb://localhost/seekdeer-dev'
+    uri: 'mongodb://localhost/exploretip-dev'
   },
   sequelize: {
     uri: 'sqlite://',

@@ -3,7 +3,7 @@
 describe('Directive: filterWhere', function () {
 
   // load the directive's module and view
-  beforeEach(module('seekdeerApp'));
+  beforeEach(module('exploretipApp'));
   beforeEach(module('components/filter-where/filter-where.html'));
 
   var element, scope;

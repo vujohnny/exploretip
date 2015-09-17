@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .directive('filterBudget', function () {
     return {
       templateUrl: 'components/filter-budget/filter-budget.html',

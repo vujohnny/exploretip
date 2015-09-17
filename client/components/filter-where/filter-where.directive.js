@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .directive('filterWhere', function () {
     return {
       templateUrl: 'components/filter-where/filter-where.html',

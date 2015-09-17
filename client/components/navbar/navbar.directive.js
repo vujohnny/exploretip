@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .directive('navbar', function () {
     return {
       templateUrl: 'components/navbar/navbar.html',

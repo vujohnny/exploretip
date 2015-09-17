@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp', [
+angular.module('exploretipApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',

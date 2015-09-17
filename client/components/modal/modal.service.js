@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .factory('Modal', function ($rootScope, $modal) {
     /**
      * Opens a modal

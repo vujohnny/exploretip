@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .config(function($stateProvider) {
     $stateProvider
       .state('main', {

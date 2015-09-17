@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .directive('footer', function () {
     return {
       templateUrl: 'components/footer/footer.html',

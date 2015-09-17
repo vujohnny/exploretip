@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
     .controller('MainCtrl', function($scope, $http, socket, uiGmapGoogleMapApi) {
         $scope.awesomeThings = [];
 

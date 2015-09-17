@@ -3,7 +3,7 @@
 describe('Controller: MainCtrl', function() {
 
   // load the controller's module
-  beforeEach(module('seekdeerApp'));
+  beforeEach(module('exploretipApp'));
   beforeEach(module('stateMock'));
   beforeEach(module('socketMock'));
 

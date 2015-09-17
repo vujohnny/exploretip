@@ -3,7 +3,7 @@
 describe('Directive: filterWhen', function () {
 
   // load the directive's module and view
-  beforeEach(module('seekdeerApp'));
+  beforeEach(module('exploretipApp'));
   beforeEach(module('components/filter-when/filter-when.html'));
 
   var element, scope;

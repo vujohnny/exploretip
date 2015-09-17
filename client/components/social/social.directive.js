@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .directive('social', function () {
     return {
       templateUrl: 'components/social/social.html',

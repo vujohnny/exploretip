@@ -7,7 +7,7 @@
 
 module.exports = {
   DOMAIN:           'http://localhost:9000',
-  SESSION_SECRET:   'seekdeer-secret',
+  SESSION_SECRET:   'exploretip-secret',
 
   // Control debug level for modules using visionmedia/debug
   DEBUG: ''

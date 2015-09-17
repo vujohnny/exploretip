@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('seekdeerApp')
+angular.module('exploretipApp')
   .directive('filterWhen', function () {
     return {
       templateUrl: 'components/filter-when/filter-when.html',

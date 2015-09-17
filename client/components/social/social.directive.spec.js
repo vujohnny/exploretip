@@ -3,7 +3,7 @@
 describe('Directive: social', function () {
 
   // load the directive's module and view
-  beforeEach(module('seekdeerApp'));
+  beforeEach(module('exploretipApp'));
   beforeEach(module('components/social/social.html'));
 
   var element, scope;
