@@ -92,17 +92,6 @@ angular.module('exploretipApp')
 
         // End accordion functions ======================================================
 
-
-        // google maps
-        /*
-                $scope.map = { 
-                    center: { latitude: 45, longitude: -73 }, 
-                    zoom: 4
-                };
-                                        
-                $scope.map.markers = [];
-        */
-
         uiGmapGoogleMapApi.then(function(maps) {
 
             var map = new google.maps.Map(document.getElementById('googleMap'), {
@@ -115,17 +104,11 @@ angular.module('exploretipApp')
                 draggable: false
             });
 
-
-
-
+			// init autocomplete on input search
             var input = document.getElementById('searchTextField');
             var options = {
                 types: ['(cities)']
             };
-            /*
-                        var map = $scope.map;
-                        var marker = $scope.map.markers;
-            */
 
             var autocomplete = new google.maps.places.Autocomplete(input, options);
 
@@ -154,9 +137,26 @@ angular.module('exploretipApp')
 
                     success: function(data) {
                         var locations = [];
+                        
+                        // create window for markers
                         $.each(data.HotelListResponse.HotelList.HotelSummary, function(k, v) {
-                            locations.push([v.name+", rating: "+v.tripAdvisorRating+" stars", v.latitude, v.longitude]);
+	                        console.log(v);
+	                        var averageRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@averageRate"];
+	                        var totalRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@total"]; // this value includes the surcharge
+                            locations.push([
+	                            v.latitude, 
+                            	v.longitude,
+                            	v.name, 
+                            	v.shortDescription, 
+                            	v.thumbNailUrl,  
+                            	v.tripAdvisorRating, 
+                            	v.tripAdvisorRatingUrl,
+                            	averageRate, 
+                            	totalRate, 
+                            	v.deepLink 
+                            ]);
                         });
+                        
                         var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
                         var labelIndex = 0;
                         var infowindow = new google.maps.InfoWindow();
@@ -164,20 +164,18 @@ angular.module('exploretipApp')
                         var markers = new Array();
                         for (i = 0; i < locations.length; i++) {
                             marker = new google.maps.Marker({
-                                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                                position: new google.maps.LatLng(locations[i][0], locations[i][1]),
                                 map: map,
                                 label: labels[labelIndex++ % labels.length]
                             });
                             markers.push(marker);
                             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                                 return function() {
-                                    infowindow.setContent(locations[i][0]);
+                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i][4]+"\" alt=\""+locations[i][2]+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i][2]+"</span> <br>Average Nightly: $"+locations[i][7]+"<br> Total: $"+locations[i][8]+"<br><img src=\""+locations[i][6]+"\" class=\"tripAdvisorRating\">");
                                     infowindow.open(map, marker);
                                 }
                             })(marker, i));
                         }
-
-
 
                     },
 
@@ -186,21 +184,16 @@ angular.module('exploretipApp')
                     }
                 });
 
-
-
                 if (place.geometry.viewport) {
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(17); // Why 17? Because it looks good.
+                    map.setZoom(17);
                 }
-            });
+            }); 
 
 
-
-
-
-        });
+        }); // end google maps sdk
 
 
         $scope.showSelected = function(input) {
