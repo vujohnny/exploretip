@@ -1,0 +1,19 @@
+<accordion-group is-open="status.second" class="custom-panel">
+
+    <accordion-heading>
+        <div ng-class="{'orange': status.second, 'black': !status.second}">
+            <i class="fa fa-{{where.groupIcon}}"></i> {{where.groupTitle}}
+            <i class="fa fa-{{where.valueIcon}}"></i> {{showSelected(where.defaultValue)}}
+            <i class="pull-right fa chevron-icon" ng-class="{'fa-chevron-down': status.second, 'fa-chevron-right': !status.second}"></i>
+        </div>
+    </accordion-heading>
+    
+	<i class="fa fa-picture-o"> Type of Destination</i>
+	
+	<div class="mutliSelect">
+	    <div ng-repeat="category in where.categories">
+	    	<input type="checkbox" ng-model="where.defaultValue[category.name]" name="group" id="{{category.name}}" ng-change="showSelected(where.defaultValue)"/>&nbsp; {{category.name}}
+	    </div>
+	</div>
+
+</accordion-group>

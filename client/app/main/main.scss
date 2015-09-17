@@ -1,0 +1,112 @@
+// site variables ===================================================================================================
+
+// webfont style
+$font-stack: Open Sans, sans-serif;
+
+
+// site colors
+$light-blue: #82cfeb;
+$blue: #1061f6;
+$yellow: #ffeb00;
+$orange: #feb900;
+$red: #cd381f;
+$green: #1ea251;
+$light-grey: #eee;
+$medium-grey: #999;
+$dark-grey: #666;
+
+
+// media queries
+$break-phone: 640px;
+$break-tablet: 768px;
+$break-desktop: 1200px;
+
+
+// reusable margins
+$small-margin: 1em;
+$medium-margin: 1.2em;
+
+
+// reusable styles
+.typography {
+  font-family: $font-stack; 
+  margin: 0;
+}
+
+.no-padding {
+  padding: 0;
+  margin: 0;
+}
+
+.orange {
+	color: $orange;
+}
+
+.black {
+	color: 000;
+}
+
+
+// site styles =====================================================================================================
+#logo {
+  
+  font-size: 1.7em;
+  margin-top: $small-margin;
+  margin-bottom: $small-margin;
+  
+  i {
+    color: $orange;
+    font-size: 1.5em;
+  }
+  
+}
+
+// accordion panel styles
+.panel {
+	margin-bottom: 5px !important; // overwrite custom bootstrap styles bc of directives
+}
+
+.panel-title {
+	
+	a {
+		text-decoration: none;
+	}
+	
+	&:hover {
+		
+		a {
+			text-decoration: none;
+			color: $orange;
+		}
+		
+	}
+	
+}
+
+// calendar styles
+.when-calendar {
+	width: 100%;
+	
+	table {
+		width: 100%;
+		
+		.btn-default[disabled], .btn-default {
+			border: 0;
+		}
+		
+		.btn-info.active {
+			background-color: $medium-grey;	
+		}
+		
+		.text-info {
+			color: $orange;
+		}
+		
+	}
+	
+}
+
+//google maps styles 
+.angular-google-map-container, #googleMap { 
+	height: 75vh; 
+}

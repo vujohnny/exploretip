@@ -1,0 +1,23 @@
+<accordion-group is-open="status.first" class="custom-panel">
+
+    <accordion-heading>
+        <div ng-class="{'orange': status.first, 'black': !status.first}">
+            <i class="fa fa-{{budget.groupIcon}}"></i> {{budget.groupTitle}}
+            <i class="fa fa-{{budget.valueIcon}}"></i> {{budget.defaultValue}}
+            <i class="pull-right fa chevron-icon" ng-class="{'fa-chevron-down': status.first, 'fa-chevron-right': !status.first}"></i>
+        </div>
+    </accordion-heading>
+    
+    <input 
+    	ng-repeat-start="slider in budget.slider"  
+    	id="slider" 
+    	type="range" 
+    	min="{{slider.min}}" 
+    	max="{{slider.max}}" 
+    	ng-value="budget.defaultValue" 
+    	step="{{slider.step}}" 
+    	ng-model="budget.defaultValue"
+    	>
+    <div ng-repeat-end/>
+
+</accordion-group>
