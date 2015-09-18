@@ -197,7 +197,7 @@ angular.module('exploretipApp')
                             markersDisplay(locations[i][0], locations[i][1]);
                             
                             // remove markers from the map
-                            markersRemove();
+                            //markersRemove();
 
                             
                             // on marker click show hotel info
