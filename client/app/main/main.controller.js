@@ -93,7 +93,17 @@ angular.module('exploretipApp')
         // End accordion functions ======================================================
 
         uiGmapGoogleMapApi.then(function(maps) {
-
+	        
+	        // google maps variables
+	        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            	labelIndex = 0,
+				infowindow = new google.maps.InfoWindow(),
+				marker,
+				locations = [],
+				i;
+				
+			
+			// init google map on view
             var map = new google.maps.Map(document.getElementById('googleMap'), {
                 center: {
                     lat: 38.4740022,
@@ -104,22 +114,40 @@ angular.module('exploretipApp')
                 draggable: false,
                 disableDefaultUI: true
             });
+            
+            
+            // set markers from results on map
+			var markersDisplay = function(lat, lng) {
+				marker = new google.maps.Marker({
+                                position: new google.maps.LatLng(lat, lng),
+                                map: map,
+                                label: labels[labelIndex++ % labels.length],
+                                animation: google.maps.Animation.DROP
+                            });
+			}
+			
+			
+			// remove all markers on map
+			var markersRemove = function() {				
+				marker.setMap(null);
+				marker = [];
+				console.log('markers removed');
+			}
+            
 
 			// init autocomplete on input search
             var input = document.getElementById('searchTextField');
-            var options = {
-                types: ['(cities)']
-            };
-
+            var options = {types: ['(cities)']};
             var autocomplete = new google.maps.places.Autocomplete(input, options);
+
 
             // event handler for autocomplete change
             google.maps.event.addListener(autocomplete, 'place_changed', function() {
-                var place = autocomplete.getPlace();
 
-
+                
                 // expedia hotel list call
-                var apiKey = '70303auc6h8hqutunreio3u8pl',
+                var place = autocomplete.getPlace(),
+                	apiKey = '70303auc6h8hqutunreio3u8pl',
                     cid = '55505',
                     minorRev = '99',
                     locale = 'en_US',
@@ -127,8 +155,10 @@ angular.module('exploretipApp')
                     destinationString = place.formatted_address,
                     arrivalDate = '10/10/2015',
                     departureDate = '10/20/2015',
-                    room = '2';
-
+                    room = '2'
+                    
+                    
+				// get expedia results
                 $.ajax({
                     type: 'GET',
                     url: 'http://api.ean.com/ean-services/rs/hotel/v3/list?locale=' + locale + '&destinationString=' + destinationString + '&apiKey=' + apiKey + '&minorRev=' + minorRev + '&departureDate=' + departureDate + '&room=' + room + '&arrivalDate=' + arrivalDate + '&curencyCode=' + curencyCode + '&cid=' + cid + '',
@@ -137,9 +167,9 @@ angular.module('exploretipApp')
                     dataType: 'jsonp',
 
                     success: function(data) {
-                        var locations = [];
+						
                         
-                        // create window for markers
+                        // loop through return
                         $.each(data.HotelListResponse.HotelList.HotelSummary, function(k, v) {
 	                        //console.log(v);
 	                        var averageRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@averageRate"];
@@ -158,23 +188,19 @@ angular.module('exploretipApp')
                             ]);
                         });
                         
-                        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                        var labelIndex = 0;
-                        var infowindow = new google.maps.InfoWindow();
-                        var marker, i;
-                        var markers = new Array();
                         
                         // build hotel template
                         for (i = 0; i < locations.length; i++) {
                             
-                            marker = new google.maps.Marker({
-                                position: new google.maps.LatLng(locations[i][0], locations[i][1]),
-                                map: map,
-                                label: labels[labelIndex++ % labels.length],
-                                animation: google.maps.Animation.DROP
-                            });
                             
-                            markers.push(marker);
+                            // set new makers on the map
+                            markersDisplay(locations[i][0], locations[i][1]);
+                            
+                            // remove markers from the map
+                            markersRemove();
+
+                            
+                            // on marker click show hotel info
                             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                                 return function() {
                                     infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i][4]+"\" alt=\""+locations[i][2]+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i][2]+"</span> <br>Average Nightly: $"+locations[i][7]+"<br> Total: $"+locations[i][8]+"<br><img src=\""+locations[i][6]+"\" class=\"tripAdvisorRating\">");
@@ -185,12 +211,13 @@ angular.module('exploretipApp')
                         }
 
                     },
-
-                    error: function(e) {
-                        console.log(e.message);
-                    }
+					
+					// if error on return display error
+                    error: function(e) {console.log(e.message);}
+                    
                 });
-
+                
+                // autocomplete location pan map to that city
                 if (place.geometry.viewport) {
                     map.fitBounds(place.geometry.viewport);
                 } else {
