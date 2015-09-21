@@ -101,6 +101,7 @@ angular.module('exploretipApp')
 		// google maps sdk ======================================================
         uiGmapGoogleMapApi.then(function(maps) {
 	        
+	        
 	        // google maps variables
 	        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
             	labelIndex = 0,
@@ -132,6 +133,21 @@ angular.module('exploretipApp')
                                 animation: google.maps.Animation.DROP
                             });
 			}
+			
+			// remove markers from map
+			var markersArray = [];
+			
+			function clearOverlays() {
+				for (var i = 0; i < markersArray.length; i++ ) {
+					markersArray[i].setMap(null);
+				}
+				markersArray.length = 0;
+				$('.results').empty(); 
+			}
+			
+			$("#removeIt").on( "click", function() {
+				clearOverlays();
+			});
 	
 
 			// init autocomplete on input search
@@ -144,26 +160,6 @@ angular.module('exploretipApp')
             google.maps.event.addListener(autocomplete, 'place_changed', function() {
 	            
 	            
-	            
-	            
-	            
-	            // <----- function to remove markers
-	            var markersArray = [];
-				function clearOverlays() {
-				  for (var i = 0; i < markersArray.length; i++ ) {
-				    markersArray[i].setMap(null);
-				  }
-				  markersArray.length = 0;
-				  $('.results').empty(); 
-				  console.log('ran');
-				}
-				
-				
-				
-				
-				
-				
-				
                 // expedia hotel list call
                 var place = autocomplete.getPlace(),
                 	apiKey = '70303auc6h8hqutunreio3u8pl',
@@ -171,16 +167,18 @@ angular.module('exploretipApp')
                     minorRev = '99',
                     locale = 'en_US',
                     curencyCode = 'USD',
+                    adults = '2',
                     destinationString = place.formatted_address,
                     arrivalDate = '11/10/2015',
                     departureDate = '11/20/2015',
-                    room = '2';
+                    room = '2',
+                    maxResults = '10';
                     
                     
 				// get expedia results
                 $.ajax({
                     type: 'GET',
-                    url: 'http://api.ean.com/ean-services/rs/hotel/v3/list?locale=' + locale + '&destinationString=' + destinationString + '&apiKey=' + apiKey + '&minorRev=' + minorRev + '&departureDate=' + departureDate + '&room=' + room + '&arrivalDate=' + arrivalDate + '&curencyCode=' + curencyCode + '&cid=' + cid + '',
+                    url: 'http://api.ean.com/ean-services/rs/hotel/v3/list?locale='+locale+'&destinationString='+destinationString+'&apiKey='+apiKey+'&minorRev='+minorRev+'&departureDate='+departureDate+'&room='+room+'&arrivalDate='+arrivalDate+'&curencyCode='+curencyCode+'&cid='+cid+'&numberOfResults='+maxResults+'&Room.numberOfAdults='+adults+'',
                     async: false,
                     contentType: "application/json",
                     dataType: 'jsonp',
@@ -231,8 +229,6 @@ angular.module('exploretipApp')
                                                         
                         }
                         
-                        //clearOverlays(); // <----- function only works here, need to deleta all markers before
-
                     },
 					
 					// if error on return display error

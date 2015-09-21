@@ -8,9 +8,13 @@
             <filter-budget></filter-budget>
             <filter-where></filter-where>
             <filter-when></filter-when>
-
-            <button type="submit" class="btn btn-default" ng-click="getCurrentValue()">Submit</button>
-			<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on">
+			
+			<div class="text-center">
+	            <button type="submit" class="btn btn-default" ng-click="getCurrentValue()">Submit</button>
+	            <button type="button" class="btn btn-default" id="removeIt">Remove Markers</button>
+				<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on">
+			</div>
+			
         </accordion>
         
         <div class="results"></div>

@@ -61,7 +61,6 @@ $medium-margin: 1.2em;
   
 }
 
-// accordion panel styles
 .panel {
 	margin-bottom: 5px !important; // overwrite custom bootstrap styles bc of directives
 }
@@ -89,31 +88,6 @@ $medium-margin: 1.2em;
 	width: 100%;
 }
 
-
-// calendar styles
-.when-calendar {
-	width: 100%;
-	
-	table {
-		width: 100%;
-		
-		.btn-default[disabled], .btn-default {
-			border: 0;
-		}
-		
-		.btn-info.active {
-			background-color: $medium-grey;	
-		}
-		
-		.text-info {
-			color: $orange;
-		}
-		
-	}
-	
-}
-
-//google maps styles 
-.angular-google-map-container, #googleMap { 
-	height: 75vh; 
+#googleMap { 
+	height: 100vh; 
 }
