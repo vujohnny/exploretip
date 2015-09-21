@@ -27,6 +27,7 @@ angular.module('exploretipApp')
             socket.unsyncUpdates('thing');
         });
 
+
         // accordion functions ======================================================
         $scope.oneAtATime = true;
 
@@ -92,6 +93,12 @@ angular.module('exploretipApp')
 
         // End accordion functions ======================================================
 
+
+
+
+
+
+		// google maps sdk ======================================================
         uiGmapGoogleMapApi.then(function(maps) {
 	        
 	        // google maps variables
@@ -125,15 +132,7 @@ angular.module('exploretipApp')
                                 animation: google.maps.Animation.DROP
                             });
 			}
-			
-			
-			// remove all markers on map
-			var markersRemove = function() {				
-				marker.setMap(null);
-				marker = [];
-				console.log('markers removed');
-			}
-            
+	
 
 			// init autocomplete on input search
             var input = document.getElementById('searchTextField');
@@ -143,8 +142,28 @@ angular.module('exploretipApp')
 
             // event handler for autocomplete change
             google.maps.event.addListener(autocomplete, 'place_changed', function() {
-
-                
+	            
+	            
+	            
+	            
+	            
+	            // <----- function to remove markers
+	            var markersArray = [];
+				function clearOverlays() {
+				  for (var i = 0; i < markersArray.length; i++ ) {
+				    markersArray[i].setMap(null);
+				  }
+				  markersArray.length = 0;
+				  $('.results').empty(); 
+				  console.log('ran');
+				}
+				
+				
+				
+				
+				
+				
+				
                 // expedia hotel list call
                 var place = autocomplete.getPlace(),
                 	apiKey = '70303auc6h8hqutunreio3u8pl',
@@ -153,9 +172,9 @@ angular.module('exploretipApp')
                     locale = 'en_US',
                     curencyCode = 'USD',
                     destinationString = place.formatted_address,
-                    arrivalDate = '10/10/2015',
-                    departureDate = '10/20/2015',
-                    room = '2'
+                    arrivalDate = '11/10/2015',
+                    departureDate = '11/20/2015',
+                    room = '2';
                     
                     
 				// get expedia results
@@ -167,48 +186,52 @@ angular.module('exploretipApp')
                     dataType: 'jsonp',
 
                     success: function(data) {
-						
-                        
-                        // loop through return
+						      
+                        // expedia loop through return
                         $.each(data.HotelListResponse.HotelList.HotelSummary, function(k, v) {
 	                        //console.log(v);
 	                        var averageRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@averageRate"];
 	                        var totalRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@total"]; // this value includes the surcharge
-                            locations.push([
-	                            v.latitude, 
-                            	v.longitude,
-                            	v.name, 
-                            	v.shortDescription, 
-                            	v.thumbNailUrl,  
-                            	v.tripAdvisorRating, 
-                            	v.tripAdvisorRatingUrl,
-                            	averageRate, 
-                            	totalRate, 
-                            	v.deepLink 
-                            ]);
+                            locations.push({
+	                            lat: v.latitude, 
+                            	lng: v.longitude,
+                            	hotelName: v.name, 
+                            	hotelDescription: v.shortDescription, 
+                            	hotelThumb: v.thumbNailUrl,  
+                            	hotelRating: v.tripAdvisorRating, 
+                            	hotelRatingImg: v.tripAdvisorRatingUrl,
+                            	hotelRateAverage: averageRate, 
+                            	hotelRateTotal: totalRate, 
+                            	hotelLink: v.deepLink 
+                            });
                         });
-                        
                         
                         // build hotel template
                         for (i = 0; i < locations.length; i++) {
-                            
-                            
+	                        
+	                        // results setup, use as var for easy reusability
+	                        var hotelResults = "<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>";
+                                                        
+                                                        
                             // set new makers on the map
-                            markersDisplay(locations[i][0], locations[i][1]);
+                            markersDisplay(locations[i].lat, locations[i].lng);
+                            markersArray.push(marker); // <----- push into array to later remove markers
                             
-                            // remove markers from the map
-                            //markersRemove();
-
-                            
+							
+							// display results in nav
+							$('.results').append(hotelResults);
+							
                             // on marker click show hotel info
                             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                                 return function() {
-                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i][4]+"\" alt=\""+locations[i][2]+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i][2]+"</span> <br>Average Nightly: $"+locations[i][7]+"<br> Total: $"+locations[i][8]+"<br><img src=\""+locations[i][6]+"\" class=\"tripAdvisorRating\">");
+                                    infowindow.setContent(hotelResults);
                                     infowindow.open(map, marker);
                                 }
                             })(marker, i));
-                            
+                                                        
                         }
+                        
+                        //clearOverlays(); // <----- function only works here, need to deleta all markers before
 
                     },
 					
@@ -226,7 +249,9 @@ angular.module('exploretipApp')
             }); 
 
 
-        }); // end google maps sdk
+        }); // end google maps sdk ======================================================
+        
+        
 
 
         $scope.showSelected = function(input) {

@@ -1,11 +1,18 @@
+.results {
+	height: 640px;
+	overflow: auto;
+}
+
 .hotelTitle {
 	font-weight: bold;
 }
 
 .hotelImg {
+	height: 9em;
     float: left;
     margin-right: 1em;
 }
 
 .tripAdvisorRating {
+	margin: 5px 0;
 }
