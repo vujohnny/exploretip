@@ -35,11 +35,11 @@ angular.module('exploretipApp')
             groupTitle: 'Budget',
             groupIcon: 'money',
             valueIcon: 'usd',
-            defaultValue: '1000',
+            defaultValue: 1000,
             slider: [{
-                min: '50',
-                max: '10000',
-                step: '50'
+                min: 50,
+                max: 10000,
+                step: 25
             }]
         };
 
@@ -47,8 +47,7 @@ angular.module('exploretipApp')
             groupTitle: 'Where',
             groupIcon: 'globe',
             defaultValue: {
-                'Tropical': true,
-                'Forrest': true
+                'Tropical': true
             },
             categories: [{
                 name: 'Tropical'
@@ -72,7 +71,6 @@ angular.module('exploretipApp')
         };
 
         $scope.showSelected = function(input) {
-            //console.log(input)
             var object = [];
             for (var o in input) {
                 if (input[o]) {
@@ -92,8 +90,6 @@ angular.module('exploretipApp')
         };
 
         // End accordion functions ======================================================
-
-
 
 
 
@@ -134,6 +130,7 @@ angular.module('exploretipApp')
                             });
 			}
 			
+			
 			// remove markers from map
 			var markersArray = [];
 			
@@ -148,7 +145,7 @@ angular.module('exploretipApp')
 			$("#removeIt").on( "click", function() {
 				clearOverlays();
 			});
-	
+			
 
 			// init autocomplete on input search
             var input = document.getElementById('searchTextField');
@@ -156,11 +153,10 @@ angular.module('exploretipApp')
             var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 
-            // event handler for autocomplete change
-            google.maps.event.addListener(autocomplete, 'place_changed', function() {
-	            
-	            
-                // expedia hotel list call
+			// expedia return ------------------------------------------------------------
+			function expediaReturn() {
+				
+				// expedia required call parameters
                 var place = autocomplete.getPlace(),
                 	apiKey = '70303auc6h8hqutunreio3u8pl',
                     cid = '55505',
@@ -169,28 +165,29 @@ angular.module('exploretipApp')
                     curencyCode = 'USD',
                     adults = '2',
                     destinationString = place.formatted_address,
-                    arrivalDate = '11/10/2015',
-                    departureDate = '11/20/2015',
+                    arrivalDate = '11/17/2015',
+                    departureDate = '11/19/2015',
                     room = '2',
-                    maxResults = '10';
+                    sort = 'PRICE', 
+                    maxResults = '20';
                     
-                    
-				// get expedia results
                 $.ajax({
                     type: 'GET',
-                    url: 'http://api.ean.com/ean-services/rs/hotel/v3/list?locale='+locale+'&destinationString='+destinationString+'&apiKey='+apiKey+'&minorRev='+minorRev+'&departureDate='+departureDate+'&room='+room+'&arrivalDate='+arrivalDate+'&curencyCode='+curencyCode+'&cid='+cid+'&numberOfResults='+maxResults+'&Room.numberOfAdults='+adults+'',
+                    url: 'http://api.ean.com/ean-services/rs/hotel/v3/list?locale='+locale+'&destinationString='+destinationString+'&apiKey='+apiKey+'&minorRev='+minorRev+'&departureDate='+departureDate+'&room='+room+'&arrivalDate='+arrivalDate+'&curencyCode='+curencyCode+'&cid='+cid+'&numberOfResults='+maxResults+'&Room.numberOfAdults='+adults+'&sort='+sort+'',
                     async: false,
                     contentType: "application/json",
                     dataType: 'jsonp',
 
                     success: function(data) {
-						      
-                        // expedia loop through return
+						
+						console.log($scope.budget.defaultValue); 
+						
                         $.each(data.HotelListResponse.HotelList.HotelSummary, function(k, v) {
-	                        //console.log(v);
+	                        
 	                        var averageRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@averageRate"];
-	                        var totalRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@total"]; // this value includes the surcharge
-                            locations.push({
+	                        var totalRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@total"];
+	                        
+							locations.push({
 	                            lat: v.latitude, 
                             	lng: v.longitude,
                             	hotelName: v.name, 
@@ -202,30 +199,37 @@ angular.module('exploretipApp')
                             	hotelRateTotal: totalRate, 
                             	hotelLink: v.deepLink 
                             });
+	                        
                         });
+                        
                         
                         // build hotel template
                         for (i = 0; i < locations.length; i++) {
 	                        
-	                        // results setup, use as var for easy reusability
-	                        var hotelResults = "<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>";
-                                                        
-                                                        
-                            // set new makers on the map
-                            markersDisplay(locations[i].lat, locations[i].lng);
-                            markersArray.push(marker); // <----- push into array to later remove markers
-                            
-							
-							// display results in nav
-							$('.results').append(hotelResults);
-							
-                            // on marker click show hotel info
-                            google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                                return function() {
-                                    infowindow.setContent(hotelResults);
-                                    infowindow.open(map, marker);
-                                }
-                            })(marker, i));
+							if(locations[i].hotelRateTotal <= $scope.budget.defaultValue) {
+								console.log(locations[i].hotelName, locations[i].hotelRateTotal);
+	                        
+		                        var hotelResults = "<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>";
+	                                                        
+	                                                        
+	                            // set new makers on the map and side nav
+	                            markersDisplay(locations[i].lat, locations[i].lng);
+	                            markersArray.push(marker); // push into array to later remove markers
+								$('.results').append(hotelResults);
+								
+								
+	                            // on marker click show hotel info -- not needed for now
+	                            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+	                                return function() {
+	                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>"); 	                                    infowindow.open(map, marker);
+	                                }
+	                            })(marker, i));
+
+							} else {
+							  
+							}
+	                        
+	                                                   
                                                         
                         }
                         
@@ -242,12 +246,21 @@ angular.module('exploretipApp')
                 } else {
                     map.setCenter(place.geometry.location);
                 }
+			} // end expedia return ------------------------------------------------------------
+			
+
+            // event handler for autocomplete change
+            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	            
+	            expediaReturn();
+	            $scope.getCurrentValue();
+                
             }); 
 
 
         }); // end google maps sdk ======================================================
-        
-        
+
+
 
 
         $scope.showSelected = function(input) {
