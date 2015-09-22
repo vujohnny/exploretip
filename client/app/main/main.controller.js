@@ -80,11 +80,11 @@ angular.module('exploretipApp')
             return object;
         };
 
-        $scope.getCurrentValue = function() {
-            console.log("inside getCurrentValue");
-            console.log("inside getCurrentValue2");
+        $scope.getCurrentValue = function(specificLocation) {
+            //console.log("inside getCurrentValue");
+            //console.log("inside getCurrentValue2");
             $http.post('/api/things', {
-                name: $scope.budget.defaultValue + " " + $scope.showSelected($scope.where.defaultValue) + " " + $scope.when.defaultValue
+                name: "$"+$scope.budget.defaultValue+", "+$scope.showSelected($scope.where.defaultValue)+", "+$scope.when.defaultValue+", "+specificLocation
             });
             $scope.newThing = '';
         };
@@ -154,7 +154,7 @@ angular.module('exploretipApp')
 
 
 			// expedia return ------------------------------------------------------------
-			function expediaReturn() {
+			function expediaReturn(specificLocation) {
 				
 				// expedia required call parameters
                 var place = autocomplete.getPlace(),
@@ -164,7 +164,7 @@ angular.module('exploretipApp')
                     locale = 'en_US',
                     curencyCode = 'USD',
                     adults = '2',
-                    destinationString = place.formatted_address,
+                    destinationString = specificLocation,
                     arrivalDate = '11/17/2015',
                     departureDate = '11/19/2015',
                     room = '2',
@@ -179,9 +179,7 @@ angular.module('exploretipApp')
                     dataType: 'jsonp',
 
                     success: function(data) {
-						
-						console.log($scope.budget.defaultValue); 
-						
+												
                         $.each(data.HotelListResponse.HotelList.HotelSummary, function(k, v) {
 	                        
 	                        var averageRate = v.RoomRateDetailsList.RoomRateDetails.RateInfos.RateInfo.ChargeableRateInfo["@averageRate"];
@@ -206,8 +204,9 @@ angular.module('exploretipApp')
                         // build hotel template
                         for (i = 0; i < locations.length; i++) {
 	                        
-							if(locations[i].hotelRateTotal <= $scope.budget.defaultValue) {
-								console.log(locations[i].hotelName, locations[i].hotelRateTotal);
+							if(locations[i].hotelRateTotal < $scope.budget.defaultValue) {
+								
+								//console.log($scope.budget.defaultValue, locations[i].hotelName, locations[i].hotelRateTotal);
 	                        
 		                        var hotelResults = "<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>";
 	                                                        
@@ -221,7 +220,10 @@ angular.module('exploretipApp')
 	                            // on marker click show hotel info -- not needed for now
 	                            google.maps.event.addListener(marker, 'click', (function(marker, i) {
 	                                return function() {
-	                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>"); 	                                    infowindow.open(map, marker);
+	                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>"); 	
+	                                    // ^^^ tried using var hotelResults from #212 but that only showed the first return
+	                                                                        
+	                                    infowindow.open(map, marker);
 	                                }
 	                            })(marker, i));
 
@@ -252,8 +254,9 @@ angular.module('exploretipApp')
             // event handler for autocomplete change
             google.maps.event.addListener(autocomplete, 'place_changed', function() {
 	            
-	            expediaReturn();
-	            $scope.getCurrentValue();
+	            var specificLocation = autocomplete.getPlace().formatted_address;
+	            expediaReturn(specificLocation);
+	            $scope.getCurrentValue(specificLocation);
                 
             }); 
 
