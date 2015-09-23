@@ -2,21 +2,21 @@
 
     <accordion-heading>
         <div ng-class="{'orange': status.second, 'black': !status.second}">
-            <i class="fa fa-{{where.groupIcon}}"></i> {{where.groupTitle}}
-            <i class="fa fa-{{where.valueIcon}}"></i> {{showSelected(where.defaultValue)}}
+            <i class="fa fa-{{where.groupIcon}}"></i> {{where.groupTitle}}:
+            <i class="fa fa-{{where.valueIcon}}"></i> Somewhere {{showSelected(where.defaultValue)}}
             <i class="pull-right fa chevron-icon" ng-class="{'fa-chevron-down': status.second, 'fa-chevron-right': !status.second}"></i>
         </div>
     </accordion-heading>
     
 	<pre><i class="fa fa-map-pin"> Specific Destination</i></pre>
 	
-	<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on">
+	<input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" ng-model="where.city">
 	
 	<hr>
 	
 	<pre><i class="fa fa-map"> Type of Destination</i></pre>
 	
-	<div class="mutliSelect">
+	<div class="mutliSelect">	    
 	    <div ng-repeat="category in where.categories">
 	    	<input type="checkbox" ng-model="where.defaultValue[category.name]" name="group" id="{{category.name}}" ng-change="showSelected(where.defaultValue)"/>&nbsp; {{category.name}}
 	    </div>
