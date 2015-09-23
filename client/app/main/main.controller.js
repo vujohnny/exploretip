@@ -52,17 +52,30 @@ angular.module('exploretipApp')
             categories: [{
                 name: 'Tropical'
             }, {
-                name: 'Snow'
+                name: 'Snowy'
             }, {
-                name: 'Rain'
+                name: 'Romantic'
             }, {
-                name: 'Forrest'
+                name: 'Party'
+            }, {
+                name: 'City'
             }]
         };
 
         $scope.when = {
             groupTitle: 'When',
             groupIcon: 'calendar',
+        };
+        
+        $scope.arriveDate = {
+	       	defaultValue: new Date(),
+            minDate: new Date() - 1,
+            maxDate: new Date().setFullYear(new Date().getFullYear() + 2),
+            showweeks: false,
+            mode: "month"
+        }
+        
+        $scope.departDate = {
             defaultValue: new Date(),
             minDate: new Date() - 1,
             maxDate: new Date().setFullYear(new Date().getFullYear() + 2),
@@ -86,7 +99,7 @@ angular.module('exploretipApp')
             //console.log("inside getCurrentValue");
             //console.log("inside getCurrentValue2");
             $http.post('/api/things', {
-                name: "$"+$scope.budget.defaultValue+", "+$scope.showSelected($scope.where.defaultValue)+", "+$scope.when.defaultValue+", "+$scope.specificLocation
+                name: "$"+$scope.budget.defaultValue+" | "+$scope.showSelected($scope.where.defaultValue)+" | "+$scope.calendarArrive+" - "+$scope.calendarDepart+" | "+$scope.specificLocation
             });
             $scope.newThing = '';
             
@@ -95,13 +108,18 @@ angular.module('exploretipApp')
         
         
         // watch functions for budget && calendar && where
-		$scope.$watch('budget.defaultValue', function(){
+		$scope.$watch("budget.defaultValue", function(){
 			console.log($scope.budget.defaultValue);
 		});
 		
-		$scope.$watch('when.defaultValue', function(){
-			//console.log($scope.when.defaultValue);
-			console.log($filter('date')($scope.when.defaultValue, 'MM/dd/yyyy'));
+		$scope.$watch("arriveDate.defaultValue", function(){
+			$scope.calendarArrive = $filter('date')($scope.arriveDate.defaultValue, 'MM/dd/yyyy');
+			console.log("From: " + $scope.calendarArrive);
+		});
+		
+		$scope.$watch("departDate.defaultValue", function(){
+			$scope.calendarDepart = $filter('date')($scope.departDate.defaultValue, 'MM/dd/yyyy');
+			console.log("To: " + $scope.calendarDepart);
 		});
 		
 		$scope.showSelected = function(input) {
@@ -194,11 +212,6 @@ angular.module('exploretipApp')
 			
 			// expedia return ------------------------------------------
 			$scope.expediaReturn = function(specificLocation) {
-								
-				//var startDate = $filter('date')($scope.when.defaultValue, 'MM/dd/yyyy');
-				//var endDate = '';
-				//console.log(startDate);   
-				//console.log(endDate);
 				
 				// expedia required call parameters
                 var place = autocomplete.getPlace(),
@@ -209,8 +222,8 @@ angular.module('exploretipApp')
                     curencyCode = 'USD',
                     adults = '2',
                     destinationString = specificLocation,
-                    arrivalDate = '11/18/2015',
-                    departureDate = '11/19/2015',
+                    arrivalDate = $scope.calendarArrive,
+                    departureDate = $scope.calendarDepart,
                     room = '2',
                     sort = 'PRICE', 
                     maxResults = '20';
@@ -252,7 +265,7 @@ angular.module('exploretipApp')
 								
 								//console.log($scope.budget.defaultValue, locations[i].hotelName, locations[i].hotelRateTotal);
 	                        
-		                        var hotelResults = "<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>";
+		                        var hotelResults = "<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"bookLink btn btn-primary\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>";
 	                                                        
 	                                                        
 	                            // set new makers on the map and side nav
@@ -263,7 +276,7 @@ angular.module('exploretipApp')
 	                            // on marker click show hotel info
 	                            google.maps.event.addListener(marker, 'click', (function(marker, i) {
 	                                return function() {
-	                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"btn btn-default\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>"); 	
+	                                    infowindow.setContent("<img src=\"http://images.travelnow.com/"+locations[i].hotelThumb+"\" alt=\""+locations[i].hotelName+"\" class=\"hotelImg\"> <span class=\"hotelTitle\">"+locations[i].hotelName+"</span> <br>Average Nightly: $"+locations[i].hotelRateAverage+"<br> Total: $"+locations[i].hotelRateTotal+"<br><img src=\""+locations[i].hotelRatingImg+"\" class=\"tripAdvisorRating\"><br><button type=\"button\" class=\"bookLink btn btn-primary\"><a href=\""+locations[i].hotelLink+"\" target=\"_blank\">Seek Deer <i class=\"fa fa-hand-peace-o\"></i></a></button><hr>"); 	
 	                                    // ^^^ tried using var hotelResults from #212 but that only showed the first return
 	                                                                        
 	                                    infowindow.open(map, marker);

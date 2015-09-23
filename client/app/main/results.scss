@@ -1,3 +1,15 @@
+.bookLink {
+	
+	a {
+		color: #fff;
+		
+		&:hover {
+			text-decoration: none;
+		}
+		
+	}
+	
+}
 .results {
 	height: auto;
 	max-height: 540px;

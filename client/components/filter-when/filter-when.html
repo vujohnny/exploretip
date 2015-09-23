@@ -2,14 +2,22 @@
     
     <accordion-heading>
         <div ng-class="{'orange': status.third, 'black': !status.third}">
-            <i class="fa fa-{{when.groupIcon}}"></i> {{when.groupTitle}}
-            <i class="fa fa-{{when.valueIcon}}"></i> {{when.defaultValue | date:'MMMM yyyy' }}
+            <i class="fa fa-{{when.groupIcon}}"></i> {{when.groupTitle}}:
+            <i class="fa fa-{{when.valueIcon}}"></i> {{arriveDate.defaultValue | date:'EEE, MMMM dd' }} - {{departDate.defaultValue | date:'EEE, MMMM dd' }}
             <i class="pull-right fa chevron-icon" ng-class="{'fa-chevron-down': status.third, 'fa-chevron-right': !status.third}"></i>
         </div>
     </accordion-heading>
     
+    <pre>FROM: {{arriveDate.defaultValue | date:'MMMM dd, yyyy' }}</pre>
+    
 	<div class="when-calendar">
-		<datepicker ng-model="when.defaultValue" min-date="when.minDate" max-date="when.maxDate" show-weeks="when.showweeks" datepicker-mode="when.mode" min-mode="when.mode" max-mode="when.mode"></datepicker>
+		<datepicker ng-model="arriveDate.defaultValue" min-date="arriveDate.minDate" max-date="arriveDate.maxDate" show-weeks="arriveDate.showweeks" datepicker-mode="arriveDate.mode" max-mode="arriveDate.mode"></datepicker>
+	</div>
+	
+	<pre>TO: {{departDate.defaultValue | date:'MMMM dd, yyyy' }}</pre>
+	
+	<div class="when-calendar">
+		<datepicker ng-model="departDate.defaultValue" min-date="departDate.minDate" max-date="departDate.maxDate" show-weeks="departDate.showweeks" datepicker-mode="departDate.mode" max-mode="departDate.mode"></datepicker>
 	</div>
 
 </accordion-group>
